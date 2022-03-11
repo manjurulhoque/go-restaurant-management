@@ -68,11 +68,11 @@ func CreateTable() gin.HandlerFunc {
 			return
 		}
 
-		table.Created_at, _ = time.Parse(time.RFC3339, time.Now().Format(time.RFC3339))
-		table.Updated_at, _ = time.Parse(time.RFC3339, time.Now().Format(time.RFC3339))
+		table.CreatedAt, _ = time.Parse(time.RFC3339, time.Now().Format(time.RFC3339))
+		table.UpdatedAt, _ = time.Parse(time.RFC3339, time.Now().Format(time.RFC3339))
 
 		table.ID = primitive.NewObjectID()
-		table.Table_id = table.ID.Hex()
+		table.TableId = table.ID.Hex()
 
 		result, insertErr := tableCollection.InsertOne(ctx, table)
 
@@ -103,15 +103,15 @@ func UpdateTable() gin.HandlerFunc {
 
 		var updateObj primitive.D
 
-		if table.Number_of_guests != nil {
-			updateObj = append(updateObj, bson.E{"number_of_guests", table.Number_of_guests})
+		if table.NumberOfGuests != nil {
+			updateObj = append(updateObj, bson.E{"number_of_guests", table.NumberOfGuests})
 		}
 
-		if table.Table_number != nil {
-			updateObj = append(updateObj, bson.E{"table_number", table.Table_number})
+		if table.TableNumber != nil {
+			updateObj = append(updateObj, bson.E{"table_number", table.TableNumber})
 		}
 
-		table.Updated_at, _ = time.Parse(time.RFC3339, time.Now().Format(time.RFC3339))
+		table.UpdatedAt, _ = time.Parse(time.RFC3339, time.Now().Format(time.RFC3339))
 
 		upsert := true
 		opt := options.UpdateOptions{

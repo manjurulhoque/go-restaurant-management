@@ -65,10 +65,10 @@ func CreateMenu() gin.HandlerFunc {
 			return
 		}
 
-		menu.Created_at, _ = time.Parse(time.RFC3339, time.Now().Format(time.RFC3339))
-		menu.Updated_at, _ = time.Parse(time.RFC3339, time.Now().Format(time.RFC3339))
+		menu.CreatedAt, _ = time.Parse(time.RFC3339, time.Now().Format(time.RFC3339))
+		menu.UpdatedAt, _ = time.Parse(time.RFC3339, time.Now().Format(time.RFC3339))
 		menu.ID = primitive.NewObjectID()
-		menu.Menu_id = menu.ID.Hex()
+		menu.MenuId = menu.ID.Hex()
 
 		result, insertErr := menuCollection.InsertOne(ctx, menu)
 		if insertErr != nil {
@@ -101,16 +101,16 @@ func UpdateMenu() gin.HandlerFunc {
 
 		var updateObj primitive.D
 
-		if menu.Start_Date != nil && menu.End_Date != nil {
-			if !inTimeSpan(*menu.Start_Date, *menu.End_Date, time.Now()) {
+		if menu.StartDate != nil && menu.EndDate != nil {
+			if !inTimeSpan(*menu.StartDate, *menu.EndDate, time.Now()) {
 				msg := "kindly retype the time"
 				c.JSON(http.StatusInternalServerError, gin.H{"error": msg})
 				defer cancel()
 				return
 			}
 
-			updateObj = append(updateObj, bson.E{"start_date", menu.Start_Date})
-			updateObj = append(updateObj, bson.E{"end_date", menu.End_Date})
+			updateObj = append(updateObj, bson.E{"start_date", menu.StartDate})
+			updateObj = append(updateObj, bson.E{"end_date", menu.EndDate})
 
 			if menu.Name != "" {
 				updateObj = append(updateObj, bson.E{"name", menu.Name})
@@ -119,8 +119,8 @@ func UpdateMenu() gin.HandlerFunc {
 				updateObj = append(updateObj, bson.E{"name", menu.Category})
 			}
 
-			menu.Updated_at, _ = time.Parse(time.RFC3339, time.Now().Format(time.RFC3339))
-			updateObj = append(updateObj, bson.E{"updated_at", menu.Updated_at})
+			menu.UpdatedAt, _ = time.Parse(time.RFC3339, time.Now().Format(time.RFC3339))
+			updateObj = append(updateObj, bson.E{"updated_at", menu.UpdatedAt})
 
 			upsert := true
 

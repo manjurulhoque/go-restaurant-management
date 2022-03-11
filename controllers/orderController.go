@@ -70,8 +70,8 @@ func CreateOrder() gin.HandlerFunc {
 			return
 		}
 
-		if order.Table_id != nil {
-			err := tableCollection.FindOne(ctx, bson.M{"table_id": order.Table_id}).Decode(&table)
+		if order.TableId != nil {
+			err := tableCollection.FindOne(ctx, bson.M{"table_id": order.TableId}).Decode(&table)
 			defer cancel()
 			if err != nil {
 				msg := fmt.Sprintf("message:Table was not found")
@@ -80,11 +80,11 @@ func CreateOrder() gin.HandlerFunc {
 			}
 		}
 
-		order.Created_at, _ = time.Parse(time.RFC3339, time.Now().Format(time.RFC3339))
-		order.Updated_at, _ = time.Parse(time.RFC3339, time.Now().Format(time.RFC3339))
+		order.CreatedAt, _ = time.Parse(time.RFC3339, time.Now().Format(time.RFC3339))
+		order.UpdatedAt, _ = time.Parse(time.RFC3339, time.Now().Format(time.RFC3339))
 
 		order.ID = primitive.NewObjectID()
-		order.Order_id = order.ID.Hex()
+		order.OrderId = order.ID.Hex()
 
 		result, insertErr := orderCollection.InsertOne(ctx, order)
 
@@ -112,19 +112,19 @@ func UpdateOrder() gin.HandlerFunc {
 			return
 		}
 
-		if order.Table_id != nil {
-			err := menuCollection.FindOne(ctx, bson.M{"tabled_id": order.Table_id}).Decode(&table)
+		if order.TableId != nil {
+			err := menuCollection.FindOne(ctx, bson.M{"tabled_id": order.TableId}).Decode(&table)
 			defer cancel()
 			if err != nil {
 				msg := fmt.Sprintf("message:Menu was not found")
 				c.JSON(http.StatusInternalServerError, gin.H{"error": msg})
 				return
 			}
-			updateObj = append(updateObj, bson.E{"menu", order.Table_id})
+			updateObj = append(updateObj, bson.E{"menu", order.TableId})
 		}
 
-		order.Updated_at, _ = time.Parse(time.RFC3339, time.Now().Format(time.RFC3339))
-		updateObj = append(updateObj, bson.E{"updated_at", order.Updated_at})
+		order.UpdatedAt, _ = time.Parse(time.RFC3339, time.Now().Format(time.RFC3339))
+		updateObj = append(updateObj, bson.E{"updated_at", order.UpdatedAt})
 
 		upsert := true
 
@@ -155,13 +155,13 @@ func UpdateOrder() gin.HandlerFunc {
 
 func OrderItemOrderCreator(order models.Order) string {
 
-	order.Created_at, _ = time.Parse(time.RFC3339, time.Now().Format(time.RFC3339))
-	order.Updated_at, _ = time.Parse(time.RFC3339, time.Now().Format(time.RFC3339))
+	order.CreatedAt, _ = time.Parse(time.RFC3339, time.Now().Format(time.RFC3339))
+	order.UpdatedAt, _ = time.Parse(time.RFC3339, time.Now().Format(time.RFC3339))
 	order.ID = primitive.NewObjectID()
-	order.Order_id = order.ID.Hex()
+	order.OrderId = order.ID.Hex()
 
 	orderCollection.InsertOne(ctx, order)
 	defer cancel()
 
-	return order.Order_id
+	return order.OrderId
 }

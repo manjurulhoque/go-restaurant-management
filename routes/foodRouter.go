@@ -5,7 +5,7 @@ import (
 	"github.com/manjurulhoque/go-restaurant-management/controllers"
 )
 
-func FoodRoutes(incomingRoutes *gin.Engine) {
+func FoodRoutes(incomingRoutes *gin.RouterGroup) {
 	incomingRoutes.GET("/foods", controllers.GetFoods())
 	incomingRoutes.GET("/foods/:food_id", controllers.GetFoods())
 	incomingRoutes.POST("/foods", controllers.CreateFood())

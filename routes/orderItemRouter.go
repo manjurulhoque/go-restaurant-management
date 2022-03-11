@@ -5,7 +5,7 @@ import (
 	"github.com/manjurulhoque/go-restaurant-management/controllers"
 )
 
-func OrderItemRoutes(incomingRoutes *gin.Engine) {
+func OrderItemRoutes(incomingRoutes *gin.RouterGroup) {
 	incomingRoutes.GET("/orderItems", controllers.GetOrderItems())
 	incomingRoutes.GET("/orderItems/:orderItem_id", controllers.GetOrderItems())
 	incomingRoutes.GET("/orderItems-order/:order_id", controllers.GetOrderItemsByOrder())

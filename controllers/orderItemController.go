@@ -150,20 +150,20 @@ func UpdateOrderItem() gin.HandlerFunc {
 
 		var updateObj primitive.D
 
-		if orderItem.Unit_price != nil {
-			updateObj = append(updateObj, bson.E{"unit_price", *&orderItem.Unit_price})
+		if orderItem.UnitPrice != nil {
+			updateObj = append(updateObj, bson.E{"unit_price", *&orderItem.UnitPrice})
 		}
 
 		if orderItem.Quantity != nil {
 			updateObj = append(updateObj, bson.E{"quantity", *orderItem.Quantity})
 		}
 
-		if orderItem.Food_id != nil {
-			updateObj = append(updateObj, bson.E{"food_id", *orderItem.Food_id})
+		if orderItem.FoodId != nil {
+			updateObj = append(updateObj, bson.E{"food_id", *orderItem.FoodId})
 		}
 
-		orderItem.Updated_at, _ = time.Parse(time.RFC3339, time.Now().Format(time.RFC3339))
-		updateObj = append(updateObj, bson.E{"updated_at", orderItem.Updated_at})
+		orderItem.UpdatedAt, _ = time.Parse(time.RFC3339, time.Now().Format(time.RFC3339))
+		updateObj = append(updateObj, bson.E{"updated_at", orderItem.UpdatedAt})
 
 		upsert := true
 		opt := options.UpdateOptions{
@@ -203,14 +203,14 @@ func CreateOrderItem() gin.HandlerFunc {
 			return
 		}
 
-		order.Order_Date, _ = time.Parse(time.RFC3339, time.Now().Format(time.RFC3339))
+		order.OrderDate, _ = time.Parse(time.RFC3339, time.Now().Format(time.RFC3339))
 
 		orderItemsToBeInserted := []interface{}{}
-		order.Table_id = orderItemPack.Table_id
+		order.TableId = orderItemPack.Table_id
 		order_id := OrderItemOrderCreator(order)
 
 		for _, orderItem := range orderItemPack.Order_items {
-			orderItem.Order_id = order_id
+			orderItem.OrderId = order_id
 
 			validationErr := validate.Struct(orderItem)
 
@@ -219,11 +219,11 @@ func CreateOrderItem() gin.HandlerFunc {
 				return
 			}
 			orderItem.ID = primitive.NewObjectID()
-			orderItem.Created_at, _ = time.Parse(time.RFC3339, time.Now().Format(time.RFC3339))
-			orderItem.Updated_at, _ = time.Parse(time.RFC3339, time.Now().Format(time.RFC3339))
-			orderItem.Order_item_id = orderItem.ID.Hex()
-			var num = toFixed(*orderItem.Unit_price, 2)
-			orderItem.Unit_price = &num
+			orderItem.CreatedAt, _ = time.Parse(time.RFC3339, time.Now().Format(time.RFC3339))
+			orderItem.UpdatedAt, _ = time.Parse(time.RFC3339, time.Now().Format(time.RFC3339))
+			orderItem.OrderItemId = orderItem.ID.Hex()
+			var num = toFixed(*orderItem.UnitPrice, 2)
+			orderItem.UnitPrice = &num
 			orderItemsToBeInserted = append(orderItemsToBeInserted, orderItem)
 		}
 

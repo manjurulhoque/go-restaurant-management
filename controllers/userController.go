@@ -101,7 +101,7 @@ func SignUp() gin.HandlerFunc {
 		defer cancel()
 		if err != nil {
 			log.Println(err)
-			c.JSON(http.StatusInternalServerError, gin.H{"error": "error occured while checking for the email"})
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "error occurred while checking for the email"})
 			return
 		}
 		//hash password
@@ -126,16 +126,16 @@ func SignUp() gin.HandlerFunc {
 
 		//create some extra details for the user object - created_at, updated_at, ID
 
-		user.Created_at, _ = time.Parse(time.RFC3339, time.Now().Format(time.RFC3339))
-		user.Updated_at, _ = time.Parse(time.RFC3339, time.Now().Format(time.RFC3339))
+		user.CreatedAt, _ = time.Parse(time.RFC3339, time.Now().Format(time.RFC3339))
+		user.UpdatedAt, _ = time.Parse(time.RFC3339, time.Now().Format(time.RFC3339))
 		user.ID = primitive.NewObjectID()
-		user.User_id = user.ID.Hex()
+		user.UserId = user.ID.Hex()
 
-		//generate token and refersh token (generate all tokens function from helper)
+		//generate token and refresh token (generate all tokens function from helper)
 
-		token, refreshToken, _ := helper.GenerateAllTokens(*user.Email, *user.First_name, *user.Last_name, user.User_id)
+		token, refreshToken, _ := helper.GenerateAllTokens(*user.Email, *user.FirstName, *user.LastName, user.UserId)
 		user.Token = &token
-		user.Refresh_Token = &refreshToken
+		user.RefreshToken = &refreshToken
 		//if all ok, then you insert this new user into the user collection
 
 		resultInsertionNumber, insertErr := userCollection.InsertOne(ctx, user)
@@ -185,10 +185,10 @@ func Login() gin.HandlerFunc {
 
 		//if all goes well, then you'll generate tokens
 
-		token, refreshToken, _ := helper.GenerateAllTokens(*foundUser.Email, *foundUser.First_name, *foundUser.Last_name, foundUser.User_id)
+		token, refreshToken, _ := helper.GenerateAllTokens(*foundUser.Email, *foundUser.FirstName, *foundUser.LastName, foundUser.UserId)
 
 		//update tokens - token and refersh token
-		helper.UpdateAllTokens(token, refreshToken, foundUser.User_id)
+		helper.UpdateAllTokens(token, refreshToken, foundUser.UserId)
 
 		//return statusOK
 		c.JSON(http.StatusOK, foundUser)

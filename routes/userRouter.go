@@ -5,9 +5,9 @@ import (
 	"github.com/manjurulhoque/go-restaurant-management/controllers"
 )
 
-func UserRoutes(incomingRoutes *gin.Engine) {
+func UserRoutes(incomingRoutes *gin.RouterGroup) {
 	incomingRoutes.GET("/users", controllers.GetUsers())
 	incomingRoutes.GET("/users/:user_id", controllers.GetUser())
-	incomingRoutes.POST("/user/signup", controllers.SignUp())
+	incomingRoutes.POST("/users/register", controllers.SignUp())
 	incomingRoutes.POST("/users/login", controllers.Login())
 }
