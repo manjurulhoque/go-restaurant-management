@@ -160,7 +160,10 @@ func OrderItemOrderCreator(order models.Order) string {
 	order.ID = primitive.NewObjectID()
 	order.OrderId = order.ID.Hex()
 
-	orderCollection.InsertOne(ctx, order)
+	_, err := orderCollection.InsertOne(ctx, order)
+	if err != nil {
+		return ""
+	}
 	defer cancel()
 
 	return order.OrderId

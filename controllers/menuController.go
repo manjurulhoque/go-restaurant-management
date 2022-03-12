@@ -24,7 +24,7 @@ func GetMenus() gin.HandlerFunc {
 		result, err := menuCollection.Find(context.TODO(), bson.M{})
 		defer cancel()
 		if err != nil {
-			c.JSON(http.StatusInternalServerError, gin.H{"error": "error occured while listing the menu items"})
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "error occurred while listing the menu items"})
 		}
 		var allMenus []bson.M
 		if err = result.All(ctx, &allMenus); err != nil {
@@ -43,7 +43,7 @@ func GetMenu() gin.HandlerFunc {
 		err := foodCollection.FindOne(ctx, bson.M{"menu_id": menuId}).Decode(&menu)
 		defer cancel()
 		if err != nil {
-			c.JSON(http.StatusInternalServerError, gin.H{"error": "error occured while fetching the menu"})
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "error occurred while fetching the menu"})
 		}
 		c.JSON(http.StatusOK, menu)
 	}
@@ -56,12 +56,14 @@ func CreateMenu() gin.HandlerFunc {
 
 		if err := c.BindJSON(&menu); err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			cancel()
 			return
 		}
 
 		validationErr := validate.Struct(menu)
 		if validationErr != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"error": validationErr.Error()})
+			cancel()
 			return
 		}
 
@@ -70,14 +72,15 @@ func CreateMenu() gin.HandlerFunc {
 		menu.ID = primitive.NewObjectID()
 		menu.MenuId = menu.ID.Hex()
 
-		result, insertErr := menuCollection.InsertOne(ctx, menu)
+		_, insertErr := menuCollection.InsertOne(ctx, menu)
 		if insertErr != nil {
 			msg := fmt.Sprintf("Menu item was not created")
 			c.JSON(http.StatusInternalServerError, gin.H{"error": msg})
+			cancel()
 			return
 		}
 		defer cancel()
-		c.JSON(http.StatusOK, result)
+		c.JSON(http.StatusOK, menu)
 		defer cancel()
 	}
 }
