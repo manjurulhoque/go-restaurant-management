@@ -54,7 +54,7 @@ func GetFoods() gin.HandlerFunc {
 			matchStage, groupStage, projectStage})
 		defer cancel()
 		if err != nil {
-			c.JSON(http.StatusInternalServerError, gin.H{"error": "error occured while listing food items"})
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "error occurred while listing food items"})
 		}
 		var allFoods []bson.M
 		if err = result.All(ctx, &allFoods); err != nil {
